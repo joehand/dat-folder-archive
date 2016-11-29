@@ -1,6 +1,6 @@
 {
   "name": "dat-folder-archive",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "create a .dat folder db and return a hyperdrive archive",
   "main": "index.js",
   "scripts": {
