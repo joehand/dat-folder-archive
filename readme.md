@@ -1,4 +1,4 @@
-# dat-folder-archive
+# dat-folder-archive [![Travis](https://img.shields.io/travis/joehand/dat-folder-archive.svg?style=flat-square)](https://travis-ci.org/joehand/dat-folder-archive) [![npm](https://img.shields.io/npm/v/dat-folder-archive.svg?style=flat-square)](https://npmjs.org/package/dat-folder-archive)
 
 Creates an archive in a folder using the `.dat` folder database.
 
