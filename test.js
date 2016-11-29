@@ -2,6 +2,7 @@ var fs = require('fs')
 var path = require('path')
 var test = require('tape')
 var rimraf = require('rimraf')
+var datKeyAs = require('dat-key-as')
 
 var archiveFolder = require('.')
 var datDir = path.join(__dirname, '.dat')
@@ -26,6 +27,36 @@ test('creates archive folder', function (t) {
 // this test must follow the one that creates an archive
 test('resume archive', function (t) {
   archiveFolder(__dirname, {resume: true}, function (err, archive, db) {
+    t.error(err, 'no callback error')
+    t.ok(archive.resume, 'sets archive.resume to true')
+    t.ok(archive, 'archive okay')
+    t.same(archive.key, key, 'key matches old one')
+    archive.close(function () {
+      db.close(function () {
+        t.end()
+      })
+    })
+  })
+})
+
+// this test must follow the one that creates an archive
+test('resume archive with buffer key', function (t) {
+  archiveFolder(__dirname, {resume: true, key: datKeyAs.buf(key)}, function (err, archive, db) {
+    t.error(err, 'no callback error')
+    t.ok(archive.resume, 'sets archive.resume to true')
+    t.ok(archive, 'archive okay')
+    t.same(archive.key, key, 'key matches old one')
+    archive.close(function () {
+      db.close(function () {
+        t.end()
+      })
+    })
+  })
+})
+
+// this test must follow the one that creates an archive
+test('resume archive with string key', function (t) {
+  archiveFolder(__dirname, {resume: true, key: datKeyAs.str(key)}, function (err, archive, db) {
     t.error(err, 'no callback error')
     t.ok(archive.resume, 'sets archive.resume to true')
     t.ok(archive, 'archive okay')
