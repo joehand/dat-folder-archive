@@ -26,12 +26,12 @@ module.exports = function (dir, opts, cb) {
 
   datDb(dir, opts, function (err, db, key, saveKey) {
     if (err) return cb(err)
-    key = datKeyAs.buf(key)
 
+    key = datKeyAs.buf(key)
     // TODO: make these errors clearer (for user and developers)
     if (opts.resume && !key) return closeDb('No existing archive, cannot resume.', true)
     if (opts.resume === false && key) return closeDb('Archive exists in directory, cannot overwrite')
-    if (key && opts.key && opts.key !== key) return closeDb('Error: Destination path already exists and contains a different dat.')
+    if (key && opts.key && !key.equals(opts.key)) return closeDb('Error: Destination path already exists and contains a different dat.')
 
     var archive = createArchive(db, key || opts.key, opts)
     if (!archive.key) return done() // not live archive
