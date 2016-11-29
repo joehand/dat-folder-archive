@@ -5,6 +5,7 @@ var datDb = require('dat-folder-db')
 var datKeyAs = require('dat-key-as')
 var hyperdrive = require('hyperdrive')
 var raf = require('random-access-file')
+var rimraf = require('rimraf')
 
 module.exports = function (dir, opts, cb) {
   assert.ok(dir, 'dat-folder-archive: directory required')
@@ -27,10 +28,10 @@ module.exports = function (dir, opts, cb) {
     if (err) return cb(err)
     key = datKeyAs.buf(key)
 
-    // TODO: make these clearer (for user and developers)
-    if (opts.resume && !key) return cb('No existing archive, cannot resume.')
-    if (opts.resume === false && key) return cb('Archive exists in directory, cannot overwrite')
-    if (key && opts.key && opts.key !== key) return cb('Error: Destination path already exists and contains a different dat.')
+    // TODO: make these errors clearer (for user and developers)
+    if (opts.resume && !key) return closeDb('No existing archive, cannot resume.', true)
+    if (opts.resume === false && key) return closeDb('Archive exists in directory, cannot overwrite')
+    if (key && opts.key && opts.key !== key) return closeDb('Error: Destination path already exists and contains a different dat.')
 
     var archive = createArchive(db, key || opts.key, opts)
     if (!archive.key) return done() // not live archive
@@ -47,6 +48,14 @@ module.exports = function (dir, opts, cb) {
 
     function done () {
       return cb(null, archive, db)
+    }
+
+    function closeDb (err, remove) {
+      db.close(function () {
+        if (!remove) return cb(err, null, db)
+        rimraf.sync(db.location) // TODO: don't create .dat folder in first place
+        return cb(err)
+      })
     }
   })
 

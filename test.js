@@ -4,37 +4,64 @@ var test = require('tape')
 var rimraf = require('rimraf')
 
 var archiveFolder = require('.')
+var datDir = path.join(__dirname, '.dat')
+var key
 
 test('creates archive folder', function (t) {
-  var dir = path.join(__dirname, '.dat')
-  rimraf.sync(dir)
+  rimraf.sync(datDir)
   archiveFolder(__dirname, {}, function (err, archive, db) {
     t.error(err, 'no callback error')
+    key = archive.key
     t.ok(archive, 'returns archive')
     t.ok(db, 'returns db')
-    t.doesNotThrow(function () { checkDirExists(dir) }, '.dat folder created')
+    t.doesNotThrow(function () { checkDirExists(datDir) }, '.dat folder created')
+    archive.close(function () {
+      db.close(function () {
+        t.end()
+      })
+    })
+  })
+})
+
+// this test must follow the one that creates an archive
+test('resume archive', function (t) {
+  archiveFolder(__dirname, {resume: true}, function (err, archive, db) {
+    t.error(err, 'no callback error')
+    t.ok(archive.resume, 'sets archive.resume to true')
+    t.ok(archive, 'archive okay')
+    t.same(archive.key, key, 'key matches old one')
+    archive.close(function () {
+      db.close(function () {
+        t.end()
+      })
+    })
+  })
+})
+
+// this test must follow the one that create/resumes an archive
+test('resume + bad key does not match existing', function (t) {
+  archiveFolder(__dirname, {resume: true, key: new Array(65).join('d')}, function (err, archive, db) {
+    t.ok(err, 'callback with error')
+    db.close(function () {
+      t.end()
+    })
+  })
+})
+
+// this test must follow the one that create/resumes an archive
+test('resume false with existing archive', function (t) {
+  archiveFolder(__dirname, {resume: false}, function (err, archive, db) {
+    t.ok(err, 'callback with error')
     t.end()
   })
 })
 
-test('resumes archive', function (t) {
-  t.skip('TODO')
-  t.end()
-})
-
-test('key does not match existing', function (t) {
-  t.skip('TODO')
-  t.end()
-})
-
-test('resume false with existing archive', function (t) {
-  t.skip('TODO')
-  t.end()
-})
-
 test('try resume without existing archive', function (t) {
-  t.skip('TODO')
-  t.end()
+  rimraf.sync(datDir)
+  archiveFolder(__dirname, {resume: true}, function (err) {
+    t.ok(err, 'callback with error')
+    t.end()
+  })
 })
 
 test('no dir fails', function (t) {
