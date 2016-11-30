@@ -37,7 +37,7 @@ module.exports = function (dir, opts, cb) {
     if (!archive.key) return done() // not live archive
     if (key) {
       // Key already in db, resuming
-      archive.resume = true // TODO: better way to set resume?
+      archive.resumed = true // TODO: better way to set resume?
       return done()
     }
     saveKey(archive.key, function (err) {
