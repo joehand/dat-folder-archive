@@ -28,7 +28,7 @@ test('creates archive folder', function (t) {
 test('resume archive', function (t) {
   archiveFolder(__dirname, {resume: true}, function (err, archive, db) {
     t.error(err, 'no callback error')
-    t.ok(archive.resume, 'sets archive.resume to true')
+    t.ok(archive.resumed, 'sets archive.resumed to true')
     t.ok(archive, 'archive okay')
     t.same(archive.key, key, 'key matches old one')
     archive.close(function () {
@@ -43,7 +43,7 @@ test('resume archive', function (t) {
 test('resume archive with buffer key', function (t) {
   archiveFolder(__dirname, {resume: true, key: datKeyAs.buf(key)}, function (err, archive, db) {
     t.error(err, 'no callback error')
-    t.ok(archive.resume, 'sets archive.resume to true')
+    t.ok(archive.resumed, 'sets archive.resumed to true')
     t.ok(archive, 'archive okay')
     t.same(archive.key, key, 'key matches old one')
     archive.close(function () {
@@ -58,7 +58,7 @@ test('resume archive with buffer key', function (t) {
 test('resume archive with string key', function (t) {
   archiveFolder(__dirname, {resume: true, key: datKeyAs.str(key)}, function (err, archive, db) {
     t.error(err, 'no callback error')
-    t.ok(archive.resume, 'sets archive.resume to true')
+    t.ok(archive.resumed, 'sets archive.resumed to true')
     t.ok(archive, 'archive okay')
     t.same(archive.key, key, 'key matches old one')
     archive.close(function () {
