@@ -68,7 +68,7 @@ The `.dat` folder can be used to persist an archive in a folder. When creating a
 * `resume = true`: resume an archive only if it *already* exists and, if specified,  `opts.key` matches the key in the `.dat` folder.
 * `resume = null` (default): create or resume an archive. If `opts.key` is specified, check to make sure key matches.
 
-The callback will set `archive.resume = true` if the archive was resumed, not newly created.
+The callback will set `archive.resumed = true` if the archive was resumed, not newly created.
 
 ## License 
 
