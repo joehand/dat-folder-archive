@@ -2,7 +2,7 @@ var fs = require('fs')
 var path = require('path')
 var test = require('tape')
 var rimraf = require('rimraf')
-var datKeyAs = require('dat-key-as')
+var encoding = require('dat-encoding')
 
 var archiveFolder = require('.')
 var datDir = path.join(__dirname, '.dat')
@@ -41,7 +41,7 @@ test('resume archive', function (t) {
 
 // this test must follow the one that creates an archive
 test('resume archive with buffer key', function (t) {
-  archiveFolder(__dirname, {resume: true, key: datKeyAs.buf(key)}, function (err, archive, db) {
+  archiveFolder(__dirname, {resume: true, key: encoding.toBuf(key)}, function (err, archive, db) {
     t.error(err, 'no callback error')
     t.ok(archive.resumed, 'sets archive.resumed to true')
     t.ok(archive, 'archive okay')
@@ -56,7 +56,7 @@ test('resume archive with buffer key', function (t) {
 
 // this test must follow the one that creates an archive
 test('resume archive with string key', function (t) {
-  archiveFolder(__dirname, {resume: true, key: datKeyAs.str(key)}, function (err, archive, db) {
+  archiveFolder(__dirname, {resume: true, key: encoding.toStr(key)}, function (err, archive, db) {
     t.error(err, 'no callback error')
     t.ok(archive.resumed, 'sets archive.resumed to true')
     t.ok(archive, 'archive okay')
