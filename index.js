@@ -2,7 +2,7 @@ var assert = require('assert')
 var path = require('path')
 var extend = require('xtend')
 var datDb = require('dat-folder-db')
-var datKeyAs = require('dat-key-as')
+var encoding = require('dat-encoding')
 var hyperdrive = require('hyperdrive')
 var raf = require('random-access-file')
 var rimraf = require('rimraf')
@@ -15,7 +15,7 @@ module.exports = function (dir, opts, cb) {
   }
   assert.ok(typeof cb === 'function', 'dat-folder-archive: callback required')
 
-  opts.key = datKeyAs.buf(opts.key)
+  if (opts.key) opts.key = encoding.toBuf(opts.key)
   opts = extend({
     live: true,
     resume: null,
@@ -27,7 +27,7 @@ module.exports = function (dir, opts, cb) {
   datDb(dir, opts, function (err, db, key, saveKey) {
     if (err) return cb(err)
 
-    key = datKeyAs.buf(key)
+    if (key) key = encoding.toBuf(key)
     // TODO: make these errors clearer (for user and developers)
     if (opts.resume && !key) return closeDb('No existing archive, cannot resume.', true)
     if (opts.resume === false && key) return closeDb('Archive exists in directory, cannot overwrite')
