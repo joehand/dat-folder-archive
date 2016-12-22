@@ -103,6 +103,15 @@ test('no dir fails', function (t) {
   t.end()
 })
 
+test('drive option', function (t) {
+  rimraf.sync(datDir)
+  var something = {}
+  archiveFolder(__dirname, {resume: true, drive: something}, function (err) {
+    t.fails('TODO: do this test')
+    t.end()
+  })
+})
+
 function checkDirExists (dir) {
   fs.accessSync(dir, fs.F_OK)
 }
