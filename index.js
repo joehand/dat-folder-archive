@@ -7,12 +7,11 @@ var hyperdrive = require('hyperdrive')
 var raf = require('random-access-file')
 var rimraf = require('rimraf')
 
-module.exports = function (dir, opts, cb) {
+module.exports = datFolder
+
+function datFolder (dir, opts, cb) {
+  if (typeof opts === 'function') return datFolder(dir, {}, opts)
   assert.ok(dir, 'dat-folder-archive: directory required')
-  if (typeof opts === 'function') {
-    cb = opts
-    opts = {}
-  }
   assert.ok(typeof cb === 'function', 'dat-folder-archive: callback required')
 
   if (opts.key) opts.key = encoding.toBuf(opts.key)
@@ -60,7 +59,7 @@ module.exports = function (dir, opts, cb) {
   })
 
   function createArchive (db, key, opts) {
-    var drive = hyperdrive(db)
+    var drive = opts.drive || hyperdrive(db)
     var archive = drive.createArchive(key, opts)
 
     return archive
